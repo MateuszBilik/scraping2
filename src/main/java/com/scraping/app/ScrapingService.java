@@ -17,6 +17,11 @@ import java.util.List;
 @Slf4j
 public class ScrapingService {
 
+   private final SaveData saveData;
+
+    public ScrapingService(SaveData saveData) {
+        this.saveData = saveData;
+    }
 
     private String getBody(String requestURL) throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
@@ -35,12 +40,13 @@ public class ScrapingService {
 
     public List<RestaurantDto> getRestaurants(String requestURL) throws IOException, InterruptedException {
         JSONArray jsonArray = new JSONObject(getBody(requestURL)).getJSONArray("data");
-        List<RestaurantDto> list = getRestaurantList(jsonArray);
+        List<RestaurantDto> list = getRestaurantsList(jsonArray);
         log.info("Scraped records: " + list.size());
+        saveData.save(list.toString());
         return list;
     }
 
-    private List<RestaurantDto> getRestaurantList(JSONArray jsonArray) {
+    private List<RestaurantDto> getRestaurantsList(JSONArray jsonArray) {
         List<RestaurantDto> list = new ArrayList<>();
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject address = jsonArray.getJSONObject(i).getJSONObject("contact");
