@@ -10,10 +10,9 @@ public class RestaurantDto {
 
     private String name;
     private String description;
-    private String timeToDelivery;
+    private int timeToDelivery;
     private String workingHours;
     private String address;
-    private String web;
 
     @Override
     public String toString() {
@@ -22,7 +21,6 @@ public class RestaurantDto {
                 ", timeToDelivery='" + timeToDelivery + '\'' +
                 ", workingHours='" + workingHours + '\'' +
                 ", address='" + address + '\'' +
-                ", web='" + web + '\'' +
                 '}';
     }
 }

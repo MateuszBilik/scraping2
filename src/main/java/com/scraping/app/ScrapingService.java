@@ -10,6 +10,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -34,15 +35,26 @@ public class ScrapingService {
 
     public List<RestaurantDto> getRestaurants(String requestURL) throws IOException, InterruptedException {
         JSONArray jsonArray = new JSONObject(getBody(requestURL)).getJSONArray("data");
+        List<RestaurantDto> list = getRestaurantList(jsonArray);
+        log.info("Scraped records: " + list.size());
+        return list;
+    }
+
+    private List<RestaurantDto> getRestaurantList(JSONArray jsonArray) {
+        List<RestaurantDto> list = new ArrayList<>();
         for (int i = 0; i < jsonArray.length(); i++) {
-            new RestaurantDto(
+            JSONObject address = jsonArray.getJSONObject(i).getJSONObject("contact");
+            list.add(new RestaurantDto(
                     jsonArray.getJSONObject(i).getString("restaurantName"),
                     jsonArray.getJSONObject(i).getString("metaDescription"),
+                    Integer.parseInt(jsonArray.getJSONObject(i).getString("etaDelivery")) +
+                            Integer.parseInt(jsonArray.getJSONObject(i).getString("etaPickup")),
                     jsonArray.getJSONObject(i).getString("deliveryHours"),
-                    jsonArray.getJSONObject(i).getString("deliveryHours"),
-
-            )
+                    address.getString("address") + ", " +
+                            address.getString("zip") + " " +
+                            address.getString("city")
+            ));
         }
-
+        return list;
     }
 }
