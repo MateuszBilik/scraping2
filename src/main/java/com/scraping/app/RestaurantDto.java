@@ -10,7 +10,7 @@ public class RestaurantDto {
 
     private String name;
     private String description;
-    private int timeToDelivery;
+    private String timeToDelivery;
     private String workingHours;
     private String address;
 

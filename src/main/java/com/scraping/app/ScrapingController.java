@@ -20,7 +20,7 @@ public class ScrapingController {
     }
 
     @GetMapping
-    public List<RestaurantDto> getWebSite(@RequestParam String web){
+        public List<RestaurantDto> getWebSite(@RequestParam String web){
         log.info("Scraping web is: " + web);
         try {
             return scrapingService.getRestaurants(web);

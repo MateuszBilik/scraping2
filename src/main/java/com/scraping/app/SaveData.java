@@ -13,12 +13,12 @@ import java.time.LocalDateTime;
 @Slf4j
 public class SaveData {
 
-    private static final String FILE = getDate() + " scraping.txt";
+    private static final String FILE = "save/" + getDate() + " scraping.txt";
 
     private static String getDate() {
         return LocalDateTime.now().toString()
                 .replace(".", ",")
-                .replaceAll(":", "-");
+                .replace(":", "-");
     }
 
     protected void save(String text) {

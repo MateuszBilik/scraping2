@@ -1,9 +1,9 @@
 package com.scraping.app;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.net.URI;
@@ -18,8 +18,9 @@ import java.util.List;
 public class ScrapingService {
 
    private final SaveData saveData;
+   private static final int ZIP_CODE_LENGTH = 6;
 
-    public ScrapingService(SaveData saveData) {
+    public ScrapingService(SaveData saveData)    {
         this.saveData = saveData;
     }
 
@@ -34,7 +35,10 @@ public class ScrapingService {
 
     private URI buildUri(String url) {
         return URI.create(new StringBuilder("https://api.glodny.pl/restaurants/search?zip=")
-                .append(url.substring(url.length() - 6))
+                .append(url.substring(url.length() - ZIP_CODE_LENGTH))
+                .append("&city=")
+                .append(url.substring(18, url.length() - 27)) //TODO
+                .append("&deliveryType=1")
                 .toString());
     }
 
@@ -53,8 +57,7 @@ public class ScrapingService {
             list.add(new RestaurantDto(
                     jsonArray.getJSONObject(i).getString("restaurantName"),
                     jsonArray.getJSONObject(i).getString("metaDescription"),
-                    Integer.parseInt(jsonArray.getJSONObject(i).getString("etaDelivery")) +
-                            Integer.parseInt(jsonArray.getJSONObject(i).getString("etaPickup")),
+                    jsonArray.getJSONObject(i).getString("etaDelivery"),
                     jsonArray.getJSONObject(i).getString("deliveryHours"),
                     address.getString("address") + ", " +
                             address.getString("zip") + " " +
