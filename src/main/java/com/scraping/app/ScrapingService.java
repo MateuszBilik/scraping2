@@ -17,14 +17,16 @@ import java.util.List;
 @Slf4j
 public class ScrapingService {
 
-   private final SaveData saveData;
-   private static final int ZIP_CODE_LENGTH = 6;
+    private final SaveData saveData;
+    private static final int ZIP_CODE_LENGTH = 6;
+    private static final int START_CITY_IN_URL = 18;
+    private static final int FINISH_CITY_IN_URL = 27;
 
-    public ScrapingService(SaveData saveData)    {
+    public ScrapingService(SaveData saveData) {
         this.saveData = saveData;
     }
 
-    private String getBody(String requestURL) throws IOException, InterruptedException {
+    String getBody(String requestURL) throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()
@@ -33,11 +35,11 @@ public class ScrapingService {
         return client.send(request, HttpResponse.BodyHandlers.ofString()).body();
     }
 
-    private URI buildUri(String url) {
+    URI buildUri(String url) {
         return URI.create(new StringBuilder("https://api.glodny.pl/restaurants/search?zip=")
                 .append(url.substring(url.length() - ZIP_CODE_LENGTH))
                 .append("&city=")
-                .append(url.substring(18, url.length() - 27)) //TODO
+                .append(url, START_CITY_IN_URL, url.length() - FINISH_CITY_IN_URL) //TODO
                 .append("&deliveryType=1")
                 .toString());
     }
@@ -50,7 +52,7 @@ public class ScrapingService {
         return list;
     }
 
-    private List<RestaurantDto> getRestaurantsList(JSONArray jsonArray) {
+    List<RestaurantDto> getRestaurantsList(JSONArray jsonArray) {
         List<RestaurantDto> list = new ArrayList<>();
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject address = jsonArray.getJSONObject(i).getJSONObject("contact");

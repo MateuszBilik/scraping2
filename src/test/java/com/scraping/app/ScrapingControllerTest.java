@@ -27,7 +27,7 @@ class ScrapingControllerTest {
 
 
     @Test
-    void getWebSite() throws Exception {
+    void getWebSite_whenAllIsOk() throws Exception {
         //given
         List<RestaurantDto> restaurantsList = getList();
         String url = "https://glodny.pl/lodz/restauracja-dowozem/90-517";
